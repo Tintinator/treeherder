@@ -112,16 +112,13 @@ describe('DetailsPanel', () => {
   });
 
   test('pin selected job with keyboard', async () => {
-    const { getByTitle, getByTestId } = render(testDetailsPanel(store));
+    const { getByTitle } = render(testDetailsPanel(store));
     store.dispatch(setSelectedJob(jobList.data[1], true));
 
-    const hotkeys = await waitFor(() => getByTestId('hot-keys-id'));
-    const keyDownEvent = new Event('keydown');
-    keyDownEvent.keyCode = 32;
-    keyDownEvent.key = 'Space';
-
-    hotkeys.focus();
-    hotkeys.dispatchEvent(keyDownEvent);
+    const content = await waitFor(() =>
+      document.querySelector('#th-global-content'),
+    );
+    fireEvent.keyDown(content, { key: 'Space', keyCode: 32 });
 
     const pinnedJob = await waitFor(() =>
       getByTitle('build-android-api-16/debug - busted - 18 mins'),
