@@ -141,6 +141,17 @@ describe('Filtering', () => {
       await waitFor(() => getAllByText('yaml'));
       expect(jobCount()).toBe(40);
     });
+
+    test('KeyboardShortcut u: toggle unclassified jobs', async () => {
+      const { getAllByText } = render(<App />);
+      const symbolToRemove = 'yaml';
+
+      await waitFor(() => getAllByText(symbolToRemove));
+      fireEvent.keyDown(document.body, { key: 'u', keyCode: 85 });
+
+      await waitForElementToBeRemoved(() => getAllByText(symbolToRemove));
+      expect(jobCount()).toBe(10);
+    });
   });
 
   describe('by keywords', () => {
