@@ -23,7 +23,7 @@ class KeyboardShortcuts extends React.Component {
   onKeyDown = (keyName, e) => {
     const { showOnScreenShortcuts, filterModel } = this.props;
 
-    // console.log('test:onKeyDown', keyName, e, handle);
+    // console.log('test:onKeyDown', keyName, e, e.target);
     e.preventDefault();
 
     switch (keyName) {
@@ -120,7 +120,6 @@ class KeyboardShortcuts extends React.Component {
     if (selectedJob) {
       pinJob(selectedJob);
       document.getElementById('add-related-bug-button').click();
-      document.getElementById('related-bug-input').focus();
     }
   };
 

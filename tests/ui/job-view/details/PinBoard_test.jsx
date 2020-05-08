@@ -111,7 +111,7 @@ describe('DetailsPanel', () => {
     expect(pinnedJob.closest('#pinned-job-list')).toBeInTheDocument();
   });
 
-  test('pin selected job with keyboard', async () => {
+  test('KeyboardShortcut space: pin selected job', async () => {
     const { getByTitle } = render(testDetailsPanel(store));
     store.dispatch(setSelectedJob(jobList.data[1], true));
 
@@ -127,7 +127,63 @@ describe('DetailsPanel', () => {
     expect(pinnedJob.closest('#pinned-job-list')).toBeInTheDocument();
   });
 
-  test('clear Pinboard', async () => {
+  test('KeyboardShortcut b: pin selected task and edit bug', async () => {
+    const { getByPlaceholderText } = render(testDetailsPanel(store));
+    store.dispatch(setSelectedJob(jobList.data[1], true));
+
+    const content = await waitFor(() =>
+      document.querySelector('#th-global-content'),
+    );
+
+    fireEvent.keyDown(content, { key: 'b', keyCode: 66 });
+
+    const bugInput = await waitFor(() =>
+      getByPlaceholderText('enter bug number'),
+    );
+
+    expect(bugInput).toBe(document.activeElement);
+    // cleanup to avoid an error
+    fireEvent.keyDown(content, { key: 'Escape', keyCode: 27 });
+  });
+
+  test('KeyboardShortcut c: pin selected task and edit comment', async () => {
+    const { getByPlaceholderText } = render(testDetailsPanel(store));
+    store.dispatch(setSelectedJob(jobList.data[1], true));
+
+    const content = await waitFor(() =>
+      document.querySelector('#th-global-content'),
+    );
+
+    fireEvent.keyDown(content, { key: 'c', keyCode: 67 });
+
+    const commentInput = await waitFor(() =>
+      getByPlaceholderText('click to add comment'),
+    );
+
+    expect(commentInput).toBe(document.activeElement);
+  });
+
+  test('KeyboardShortcut ctrl+shift+u: clear PinBoard', async () => {
+    const { getByTitle } = render(testDetailsPanel(store));
+    store.dispatch(setSelectedJob(jobList.data[1], true));
+
+    fireEvent.click(await waitFor(() => getByTitle('Pin job')));
+
+    const pinnedJob = await waitFor(() =>
+      getByTitle('build-android-api-16/debug - busted - 18 mins'),
+    );
+
+    fireEvent.keyDown(pinnedJob, {
+      key: 'u',
+      keyCode: 85,
+      ctrlKey: true,
+      shiftKey: true,
+    });
+
+    expect(pinnedJob).not.toBeInTheDocument();
+  });
+
+  test('clear PinBoard', async () => {
     const { getByTitle, getByText } = render(testDetailsPanel(store));
     store.dispatch(setSelectedJob(jobList.data[1], true));
 
